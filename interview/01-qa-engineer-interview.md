@@ -69,7 +69,7 @@
 ## 7. Future State — keep open-ended, no leading on AI (5 min)
 
 29. Imagine your job two years from now in an ideal world. What's different? `[4a]`
-30. _(Only after #29)_ Have you used any AI-assisted tooling — Copilot, ChatGPT, Cursor — for QA work? What worked, what didn't? `[4b] [6-R]`
+30. _(Only after #29)_ Have you used any AI-assisted tooling — code completion, chat assistants, IDE-integrated AI — for QA work? What worked, what didn't? `[4b] [6-R]`
 31. What part of your job do you think AI **should not** be doing, and why? `[6-R]`
 
 ---

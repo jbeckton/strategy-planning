@@ -98,14 +98,13 @@
 
 34. If we adopted an AI-assisted approach and it produced confident but wrong results — hallucinated tests, false-pass verifications — how would you expect that to surface, and how long before you caught it? `[6-R]`
 35. What does "this initiative failed and we pulled it back" look like — what would you need to see to call it? `[6-R] [7]`
-36. If we spent the same budget on something other than AI for QA — instrumentation, hiring, tooling refresh — what would you spend it on, and why might that be the better bet? `[7]`
 
 ---
 
 ## 8. Wrap-up (2 min)
 
-37. Which of your QA engineers should I prioritize interviewing, and why?
-38. What did I not ask about that I should have?
+36. Which of your QA engineers should I prioritize interviewing, and why?
+37. What did I not ask about that I should have?
 
 ---
 

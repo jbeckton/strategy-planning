@@ -187,18 +187,6 @@ _High-level phasing only — not implementation detail. Phase 1 should be highes
 | 2 — Expand |       |          |                  |
 | 3 — Scale  |       |          |                  |
 
-### Build vs. Buy
-
-_Leadership will ask. Have an answer._
-
-| Option | Fit for our context | Cost shape | Time to value | Lock-in / risk |
-| ------ | ------------------- | ---------- | ------------- | -------------- |
-| Buy (vendor) |               |            |               |                |
-| Build (in-house) |           |            |               |                |
-| Hybrid |                     |            |               |                |
-
-**Recommended stance:** _[buy / build / hybrid] because [reason tied to 3c pain or 6 risk]._
-
 ### Opportunity Cost — the "Do Nothing" baseline
 
 _What happens to the metrics in 3d over the next 2–4 quarters if we do not approve this? What other QA investments are we forgoing if we approve it? An initiative is worth funding only if it beats both the do-nothing trajectory and the next-best alternative use of the same capacity._

@@ -69,7 +69,7 @@ Each question in the scripts is tagged with the brief section it feeds:
 - `[6-R]` Risks (including proposed-change failure modes, not just current-state pain)
 - `[6-D]` Dependencies
 - `[6-S]` Security & Data Governance constraints
-- `[7]` Proposed Approach / phasing / build-vs-buy signal
+- `[7]` Proposed Approach / phasing
 - `[8]` The Ask (sponsor / decision-maker context)
 
 Untagged questions are warm-ups or context-builders.
