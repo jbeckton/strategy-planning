@@ -105,7 +105,7 @@ completed_at: <fill in YYYY-MM-DD when done>
 ├── forms/
 │   └── .gitkeep                                 # output dir; populated by the skill
 ├── async-forms-spec.md                          # this spec
-└── ...                                          # existing files (interview/, agent-mode-plan.md, etc.)
+└── ...                                          # existing files (interview/, qa-ai-automation-strategy-brief-template.md, etc.)
 ```
 
 That's it. No `helpers/`, no `tests/`, no `package.json`, no `responses/`, no `schemas/`.
