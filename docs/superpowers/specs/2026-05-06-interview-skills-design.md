@@ -1,6 +1,6 @@
 # Interview Skills — Design Spec
 
-**Status:** Draft v0.1 — pending implementation plan.
+**Status:** Draft v0.2 — pending implementation plan. Storage format and helper language pivoted to JSON + Node (zero install).
 **Date:** 2026-05-06.
 **Author:** brainstormed with Claude Code (superpowers).
 **Successor doc:** an implementation plan (writing-plans skill).
@@ -20,16 +20,16 @@ The agent-mode-plan ([§7](../../../agent-mode-plan.md)) listed five capability-
 
 **In scope:**
 - Seven skills (three data-layer, four behavioral) and one custom agent profile.
-- On-disk storage shape: `session.yaml`, `answers.yaml`, `metadata.yaml`, `transcript.md`, `flags.md`, `resume-token.txt`.
+- On-disk storage shape: `session.json`, `answers.json`, `metadata.json`, `transcript.md`, `flags.md`, `resume-token.txt`.
 - Question-metadata changes to existing `interview/01-..05-*.md` scripts (frontmatter only; question text untouched).
 - Two access modes: **direct** (interviewee at the keyboard) and **facilitated** (someone running the agent on their behalf during a live session).
-- Helpers in **Python** (assumed present on corporate-image dev machines).
+- Helpers in **plain JavaScript ESM** (`.mjs` files) running on Node ≥ 18. **Zero npm install required** — the helpers use only Node built-ins (`node:fs`, `node:crypto`, `node:child_process`, `node:test`).
 
 **Out of scope:**
 - Async questionnaire skill (separate spec, will be requested next). Shared seam = the storage format defined here.
 - Brief compiler — deterministic, LLM-free, separate spec.
 - Vendor / inference-provider configuration — Copilot is the runtime; this design doesn't reach into model config.
-- Privacy / consent / retention controls. This is an internal agent for ~10 people in the sponsor's org, used for efficiency. Interviewee names are captured directly in `metadata.yaml`; no consent flow, no separate identity file.
+- Privacy / consent / retention controls. This is an internal agent for ~10 people in the sponsor's org, used for efficiency. Interviewee names are captured directly in `metadata.json`; no consent flow, no separate identity file.
 - Cross-session divergence detection — happens at compile time.
 - Authentication beyond the resume token.
 
@@ -40,8 +40,7 @@ The agent-mode-plan ([§7](../../../agent-mode-plan.md)) listed five capability-
 ```
 .
 ├── .github/
-│   ├── agents/
-│   │   └── interviewer.agent.md          # Custom agent profile (entry point)
+│   ├── agents/interviewer.agent.md
 │   └── skills/
 │       ├── interview-script-loader/SKILL.md
 │       ├── interview-session-store/SKILL.md
@@ -49,45 +48,55 @@ The agent-mode-plan ([§7](../../../agent-mode-plan.md)) listed five capability-
 │       ├── interview-refinement/SKILL.md
 │       ├── interview-confidence-tagging/SKILL.md
 │       ├── interview-skip-handling/SKILL.md
-│       └── interview-bias-mitigation/SKILL.md
+│       ├── interview-bias-mitigation/SKILL.md
+│       └── README.md
 ├── helpers/
+│   ├── common/
+│   │   ├── ids.mjs            # session_id, pseudonym, resume_token generation
+│   │   ├── json_io.mjs        # atomic JSON read/write
+│   │   └── frontmatter.mjs    # tiny flat-YAML frontmatter parser (zero deps)
 │   ├── session/
-│   │   ├── new_session.py
-│   │   ├── load_session.py
-│   │   ├── advance_cursor.py
-│   │   ├── revise_cursor.py
-│   │   ├── write_answer.py
-│   │   └── check_writability.py
+│   │   ├── new_session.mjs
+│   │   ├── load_session.mjs
+│   │   ├── advance_cursor.mjs
+│   │   ├── revise_cursor.mjs
+│   │   ├── write_answer.mjs
+│   │   └── check_writability.mjs
 │   ├── script/
-│   │   ├── parse_script.py
-│   │   └── question_filter.py
+│   │   ├── parse_script.mjs
+│   │   └── question_filter.mjs
 │   ├── confidence/
-│   │   └── validate_confidence.py
+│   │   └── validate_confidence.mjs
 │   ├── skip/
-│   │   └── classify_skip.py
+│   │   └── classify_skip.mjs
 │   └── finalize/
-│       ├── finalize_session.py
-│       ├── git_branch_commit_push.py
-│       └── package_bundle.py
-├── interview/                            # (existing) persona scripts + overview
-├── responses/                            # output dir; populated per session
-│   └── {session_id}/
-│       ├── session.yaml
-│       ├── metadata.yaml
-│       ├── answers.yaml
-│       ├── transcript.md
-│       ├── flags.md
-│       ├── resume-token.txt
-│       └── identity.yaml                 # optional, only with consent
-├── schemas/                              # JSON schemas for validation
+│       ├── generate_transcript.mjs
+│       ├── finalize_session.mjs
+│       ├── git_branch_commit_push.mjs
+│       └── package_bundle.mjs
+├── schemas/                   # JSON Schema descriptions (not loaded at runtime)
 │   ├── session.schema.json
 │   ├── answers.schema.json
 │   ├── metadata.schema.json
-│   └── helpers/                          # per-helper output schemas
-└── tests/
-    ├── unit/
-    ├── integration/
-    └── fixtures/
+│   └── helpers/
+│       ├── new_session.output.schema.json
+│       ├── load_session.output.schema.json
+│       └── parse_script.output.schema.json
+├── tests/
+│   ├── unit/                  # one test_*.mjs per helper, run via node --test
+│   ├── integration/scripted_interview.mjs
+│   └── fixtures/
+│       ├── canned_responses/
+│       │   ├── qa-engineer.json
+│       │   ├── qa-lead.json
+│       │   ├── developer.json
+│       │   ├── release-manager.json
+│       │   └── product-owner.json
+│       └── golden_transcripts/
+│           └── qa-engineer-happy-path.md
+├── interview/                 # existing — frontmatter added per Task 2.1
+├── responses/.gitkeep         # output dir (otherwise empty until first session)
+└── package.json               # type: module, no dependencies
 ```
 
 `.github/skills/` is the documented Copilot location. `.claude/skills/` is also accepted by Copilot Agent Skills, so Claude Code's `skill-creator` can scaffold compatible skills in this repo without modifying the runtime expectation.
@@ -107,70 +116,97 @@ Both surfaces load the same `.github/agents/interviewer.agent.md` profile, which
 - The agent at session start ensures no responses for the new `session_id` are committed yet (otherwise refuses).
 - During an in-progress session, response files live uncommitted in the working tree.
 - At finalize, the agent creates `interview/{session_id}` branch, commits the session directory, and pushes.
-- **Mutability rule:** uncommitted = mutable; committed = read-only. Enforced by `check_writability.py` (`git ls-files --error-unmatch responses/{session_id}/session.yaml` — exit 0 means committed → refuse).
+- **Mutability rule:** uncommitted = mutable; committed = read-only. Enforced by `check_writability.mjs` (`git ls-files --error-unmatch responses/{session_id}/session.json` — exit 0 means committed → refuse).
 - No `.gitignore` for `responses/` (would conflict between branches).
+
+### 3.4 Why JSON + plain JS + zero deps
+
+- **JSON** is in Node's standard library (`JSON.parse`, `JSON.stringify`). YAML would require a third-party package — the whole point of this pivot is to avoid any `npm install` step for the interviewee. Loss of human-readability is small because the human-readable artifact is `transcript.md`.
+- **Plain JavaScript ESM (`.mjs`)** runs on any Node ≥ 14 with no compilation, no transpiler, no `tsx`/`ts-node`. TypeScript was considered and deferred — the helper set is small (~14 files, ~50–100 lines each) and the readability gain doesn't justify the toolchain.
+- **Node built-ins only** — `node:fs`, `node:crypto`, `node:child_process`, `node:path`, `node:test` (built-in test runner since Node 18). The interview-script frontmatter (which is YAML, not JSON) is parsed by a tiny ~30-line flat-YAML parser in `helpers/common/frontmatter.mjs`. We do not depend on a full YAML implementation because our frontmatter is intentionally flat (scalars and arrays of strings).
 
 ## 4. Storage spec
 
-### 4.1 `session.yaml`
+### 4.1 `session.json`
 
-```yaml
-session_id: 20260506-qa-eng-7c9a
-pseudonym: participant-7c9a
-resume_token: xkj4-9q2m
-script_id: qa-engineer
-script_version: 0.2.0
-agent_identifier: copilot-interviewer-v1
-started_at: 2026-05-06T14:00:00Z
-last_active_at: 2026-05-06T14:32:00Z
-status: in_progress           # in_progress | complete | abandoned
-cursor:
-  current_question_id: qa-eng-q12
-  visited_question_ids: [qa-eng-q1, ..., qa-eng-q11]
-required_context_satisfied: true
-notes: null
+```json
+{
+  "session_id": "20260506-qa-eng-7c9a",
+  "pseudonym": "participant-7c9a",
+  "resume_token": "xkj4-9q2m",
+  "script_id": "qa-engineer",
+  "script_version": "0.2.0",
+  "agent_identifier": "copilot-interviewer-v1",
+  "started_at": "2026-05-06T14:00:00Z",
+  "last_active_at": "2026-05-06T14:32:00Z",
+  "status": "in_progress",
+  "cursor": {
+    "current_question_id": "qa-engineer-q12",
+    "visited_question_ids": ["qa-engineer-q1", "qa-engineer-q2"]
+  },
+  "required_context_satisfied": true,
+  "notes": null
+}
 ```
 
-### 4.2 `answers.yaml` (one entry per question)
+`status` values: `in_progress | complete | abandoned`.
 
-```yaml
-- question_id: qa-eng-q7
-  tags: [3d]
-  script_version: 0.2.0
-  prompt_text: "How long did it take from..."
-  status: answered              # answered | skipped | declined | pending | revised
-  response_text: "..."
-  response_confidence: tracked  # tracked | estimated | inferred | discussion-derived | null
-  follow_ups:
-    - prompt: "Is that tracked or estimated?"
-      response: "Estimated"
-  follow_up_count: 1            # explicit ≤3 cap enforcement
-  skip_reason: null             # null | not_measured | declined | not_applicable | human_only
-  revised_from: null            # populated when navigating back and revising
-  timestamp: 2026-05-06T14:32:00Z
+### 4.2 `answers.json` (array, one entry per question)
+
+```json
+[
+  {
+    "question_id": "qa-engineer-q7",
+    "tags": ["3d"],
+    "script_version": "0.2.0",
+    "prompt_text": "How long did it take from...",
+    "status": "answered",
+    "response_text": "About 2 days",
+    "response_confidence": "estimated",
+    "follow_ups": [
+      {"prompt": "Is that tracked or estimated?", "response": "Estimated"}
+    ],
+    "follow_up_count": 1,
+    "skip_reason": null,
+    "revised_from": null,
+    "timestamp": "2026-05-06T14:32:00Z"
+  }
+]
 ```
 
-### 4.3 `metadata.yaml`
+Three additions vs. the plan's draft in [§4c](../../../agent-mode-plan.md):
+- `follow_up_count` so the refinement skill enforces the ≤3 cap deterministically.
+- `revised_from` + `revised` status to support back-navigation without losing the prior answer.
+- `discussion-derived` confidence value, used when refinement caps out without a committed answer (per [plan §7b](../../../agent-mode-plan.md)).
 
-```yaml
-session_id: 20260506-qa-eng-7c9a
-pseudonym: participant-7c9a
-interviewee_name: "Jane Smith"  # optional, captured directly when offered
-persona: qa-engineer
-script_id: qa-engineer
-script_version: 0.2.0
-agent_identifier: copilot-interviewer-v1
-access_mode: direct           # direct | facilitated
-facilitator_pseudonym: null   # participant-{4-hex} when access_mode: facilitated
-facilitator_name: null        # optional, when access_mode: facilitated
-started_at: 2026-05-06T14:00:00Z
-completed_at: null
-counts:
-  total_questions: 32
-  answered: 18
-  skipped: 4
-  declined: 0
-  human_only_gaps: 3          # AI-fit questions skipped, await human follow-up
+`status`: `answered | skipped | declined | pending | revised`.
+`response_confidence`: `tracked | estimated | inferred | discussion-derived | null`.
+`skip_reason`: `null | not_measured | declined | not_applicable | human_only`.
+
+### 4.3 `metadata.json`
+
+```json
+{
+  "session_id": "20260506-qa-eng-7c9a",
+  "pseudonym": "participant-7c9a",
+  "interviewee_name": "Jane Smith",
+  "persona": "qa-engineer",
+  "script_id": "qa-engineer",
+  "script_version": "0.2.0",
+  "agent_identifier": "copilot-interviewer-v1",
+  "access_mode": "direct",
+  "facilitator_pseudonym": null,
+  "facilitator_name": null,
+  "started_at": "2026-05-06T14:00:00Z",
+  "completed_at": null,
+  "counts": {
+    "total_questions": 32,
+    "answered": 18,
+    "skipped": 4,
+    "declined": 0,
+    "human_only_gaps": 3
+  }
+}
 ```
 
 ### 4.4 ID schemes
@@ -184,15 +220,15 @@ counts:
 
 ### 4.5 Question-metadata changes to existing scripts
 
-Each `interview/01-..05-*.md` file gains YAML frontmatter:
+Each `interview/01-..05-*.md` file gains YAML frontmatter (the only file in the system that uses YAML — kept human-readable for the script editor, parsed by a tiny stdlib-only parser):
 
 ```yaml
 ---
 script_id: qa-engineer
 persona: QA Engineer (Individual Contributor)
 script_version: 0.2.0
-required_context_question_ids: [qa-eng-q2]
-human_only_question_ids: [qa-eng-q30, qa-eng-q31, qa-eng-q32]
+required_context_question_ids: [qa-engineer-q2]
+human_only_question_ids: [qa-engineer-q30, qa-engineer-q31, qa-engineer-q32]
 ---
 ```
 
@@ -200,18 +236,18 @@ Question IDs are **derived** from the existing numbered structure by `interview-
 
 ### 4.6 Interviewee name handling
 
-The agent asks for the interviewee's name at session start ("optional — what should I call you?"). If provided, it's stored in `metadata.yaml.interviewee_name`. No separate file, no consent flow. The `pseudonym` (system-generated `participant-{4-hex}`) remains the primary key for cross-session aggregation in compilation; the name is just a convenience for the sponsor when reading transcripts. Same pattern for `facilitator_name` when in facilitated mode.
+The agent asks for the interviewee's name at session start ("optional — what should I call you?"). If provided, it's stored in `metadata.json.interviewee_name`. No separate file, no consent flow. The `pseudonym` (system-generated `participant-{4-hex}`) remains the primary key for cross-session aggregation in compilation; the name is just a convenience for the sponsor when reading transcripts. Same pattern for `facilitator_name` when in facilitated mode.
 
 ### 4.7 Closed open decisions (from [agent-mode-plan §9](../../../agent-mode-plan.md))
 
 | # | Decision | Resolution |
 |---|---|---|
-| 1 | Storage format | YAML for machine records, sibling `transcript.md` |
+| 1 | Storage format | **JSON** for machine records, sibling `transcript.md` for human-readable. (Chosen over YAML to avoid any `npm install` step.) |
 | 2 | Interview ID scheme | `YYYYMMDD-{persona-slug}-{4-hex}` |
 | 3 | `responses/` in version control | Yes, on every branch; no `.gitignore`. Mutability via `check_writability` |
 | 4 | AI-fit questions agent-asked or human-only | **Human-only.** Listed in `human_only_question_ids` frontmatter; agent skips them with `skip_reason: human_only` |
 | 5 | Consent and retention | Not implemented. Internal-org tool for ~10 people; no consent flow needed. |
-| 6 | Real-name collection | Captured directly in `metadata.yaml.interviewee_name` (optional). No separate file. |
+| 6 | Real-name collection | Captured directly in `metadata.json.interviewee_name` (optional). No separate file. |
 | 7 | Resume token delivery | Surfaced on screen at session start AND written to `resume-token.txt` in the session dir |
 | 8 | Script-version mismatch on resume | Lock session to original version |
 | 9 | Transport channels | `git` (default) and optional `bundle` (`.zip`). Email/Slack/drive remain interviewee-driven and not implemented as agent transports |
@@ -220,7 +256,7 @@ The agent asks for the interviewee's name at session start ("optional — what s
 
 ## 5. Skills
 
-All skills live at `.github/skills/<skill-name>/SKILL.md`. They call helpers in `helpers/`. The data-layer skills are loaded eagerly via the agent profile; the behavioral skills load when their trigger description fires.
+All skills live at `.github/skills/<skill-name>/SKILL.md`. They call helpers in `helpers/`. Helpers run as `node helpers/<group>/<file>.mjs <json-args>` — each helper accepts a single JSON-encoded argv positional argument and emits JSON to stdout. The data-layer skills are loaded eagerly via the agent profile; the behavioral skills load when their trigger description fires.
 
 ### 5.1 Data-layer skills
 
@@ -230,25 +266,24 @@ Parses a persona script, returns structured frontmatter + ordered question list 
 
 - **Trigger description:** *"Use when the agent needs to load or validate a persona interview script — at session start, on resume to verify script_version, or when computing the next question."*
 - **Operations:** `parse(script_id) → {frontmatter, questions[]}`; `filter(script_id, --exclude human_only)`.
-- **Helpers:** `helpers/script/parse_script.py`, `helpers/script/question_filter.py`.
-- **Contract:** pure parsing, idempotent. Question IDs derived as `{script_id}-q{number}`. Malformed frontmatter or missing `script_version` → exit non-zero with diagnostic JSON; agent aborts session start.
+- **Helpers:** `helpers/script/parse_script.mjs`, `helpers/script/question_filter.mjs`. Both rely on `helpers/common/frontmatter.mjs` for the small flat-YAML parse.
+- **Contract:** pure parsing, idempotent. Question IDs derived as `{script_id}-q{number}`. Malformed frontmatter or missing `script_version` → exit non-zero with `{"error": "missing_frontmatter", "message": "..."}` on stderr; agent aborts session start.
 
 #### 5.1.2 `interview-session-store`
 
-CRUD on `session.yaml` / `answers.yaml` / `metadata.yaml`. Owns cursor state and the writability rule.
+CRUD on `session.json` / `answers.json` / `metadata.json`. Owns cursor state and the writability rule.
 
 - **Trigger description:** *"Loaded eagerly via the agent profile. Use for every state-changing operation: creating a session, advancing/reversing the cursor, recording an answer or follow-up, updating session status."*
 - **Operations:**
-  - `new_session(script_id, persona, access_mode, interviewee_name?, facilitator_name?)` → returns `{session_id, resume_token, pseudonym}`. Writes initial 3 YAML files + `resume-token.txt`.
-  - `load_session(resume_token | session_id)` → returns full session state; runs `check_writability` first.
-  - `advance_cursor(session_id)` → moves to next question, skipping `human_only` and already-visited IDs.
-  - `revise_cursor(session_id, target_question_id)` → back-nav to a previously-visited question.
-  - `write_answer(session_id, question_id, ...)` → upsert in `answers.yaml`; updates `last_active_at`.
-  - `mark_revised(session_id, question_id, new_response)` → moves prior answer to `revised_from`, writes new with `status: revised`.
-  - `check_writability(session_id)` → refuses if session directory is committed in current `HEAD`.
+  - `new_session({ script_id, persona, access_mode, total_questions, agent_identifier, interviewee_name?, facilitator_name? })` → returns `{session_id, resume_token, pseudonym, session_dir}`. Writes initial 3 JSON files + `resume-token.txt`.
+  - `load_session({ resume_token | session_id })` → returns full session state; runs `check_writability` first.
+  - `advance_cursor({ session_dir, questions_in_order, human_only_ids })` → moves to next un-visited, non-`human_only` question; returns the next `question_id` or `null`.
+  - `revise_cursor({ session_dir, target_question_id })` → back-nav to a previously-visited question.
+  - `write_answer({ session_dir, question_id, ... })` → upsert in `answers.json`; updates `last_active_at` and appends to `cursor.visited_question_ids`.
+  - `check_writability({ session_dir })` → returns `true` if uncommitted, `false` if committed in current `HEAD`.
 - **Helpers:** the six files under `helpers/session/`.
 - **Contract:**
-  - All writes are atomic: write-tempfile + rename.
+  - All writes are atomic: write-tempfile + rename via `helpers/common/json_io.mjs`.
   - `check_writability` runs before every write.
   - Single-writer rule is documented as a user-facing rule, not enforced via lock file (atomic writes provide sufficient safety).
   - Updates `cursor.visited_question_ids` and `last_active_at` on every successful write.
@@ -260,12 +295,12 @@ End-of-session work — status flip, transcript generation, git transport, optio
 - **Trigger description:** *"Use when the interviewee indicates they're done, the cursor reaches the end of the script, or the agent times out a long-idle session and the user confirms wrap-up."*
 - **Operations (sequential):**
   1. Validate session is `in_progress` and writable.
-  2. Generate `transcript.md` from `answers.yaml`.
-  3. Recompute `metadata.yaml` counts.
-  4. Flip `session.yaml.status: complete`, set `completed_at`.
+  2. Generate `transcript.md` from `answers.json`.
+  3. Recompute `metadata.json` counts.
+  4. Flip `session.json.status: complete`, set `completed_at`.
   5. **Git transport** (default): create branch `interview/{session_id}`, add session dir, commit, push.
-  6. **Optional bundle:** `responses/{session_id}.zip` if requested or git fails.
-- **Helpers:** `helpers/finalize/finalize_session.py`, `helpers/finalize/git_branch_commit_push.py`, `helpers/finalize/package_bundle.py`.
+  6. **Optional bundle:** `responses/{session_id}.zip` if requested or git fails. Built from Node built-ins (`node:zlib` + a small custom zip writer) — no `archiver` dep. *(If a custom zip writer turns out to be too much work for the value, fall back to spawning the system `tar` or `7z`; flag during implementation.)*
+- **Helpers:** `helpers/finalize/finalize_session.mjs`, `helpers/finalize/git_branch_commit_push.mjs`, `helpers/finalize/package_bundle.mjs`, `helpers/finalize/generate_transcript.mjs`.
 - **Contract:**
   - Idempotent: re-running on a complete session returns existing branch URL or bundle path.
   - Git failure (push rejected) → session stays `complete` locally; bundle offered as fallback. Agent surfaces error and asks: retry push, switch to bundle, or stop.
@@ -275,7 +310,7 @@ End-of-session work — status flip, transcript generation, git transport, optio
 
 ### 5.2 Behavioral skills
 
-These skills are mostly markdown rules. They call `interview-session-store` for persistence; they never write YAML directly.
+These skills are mostly markdown rules. They call `interview-session-store` for persistence; they never write JSON files directly.
 
 #### 5.2.1 `interview-refinement`
 
@@ -300,7 +335,7 @@ Probes for tracked vs. estimated when answers contain numbers.
   - Map to `response_confidence`: `tracked` / `estimated` / `inferred`. If interviewee can't or won't classify, record `null` and add a row to `flags.md`. Never block the session.
   - For `[3d]`-tagged questions, the probe is **attempted** (not mandatory in a session-blocking sense). For other numeric answers, the probe is recommended; agent may defer if pacing is tight.
   - The probe must be a real exchange; do not synthesize a confidence value without asking.
-- **Helpers:** `helpers/confidence/validate_confidence.py` (validates the recorded enum value).
+- **Helpers:** `helpers/confidence/validate_confidence.mjs` (validates the recorded enum value).
 
 #### 5.2.3 `interview-skip-handling`
 
@@ -316,7 +351,7 @@ Distinguishes three skip kinds + recognizes `human_only`.
 | "That doesn't apply" / "N/A" | `skipped` | `not_applicable` | No |
 | (agent-driven, AI-fit) | `skipped` | `human_only` | Never. Increment `metadata.counts.human_only_gaps`. |
 
-- **Helpers:** `helpers/skip/classify_skip.py` (returns one of `{not_measured, declined, not_applicable}`; the `human_only` case bypasses the classifier).
+- **Helpers:** `helpers/skip/classify_skip.mjs` (returns one of `{not_measured, declined, not_applicable}`; the `human_only` case bypasses the classifier).
 
 #### 5.2.4 `interview-bias-mitigation`
 
@@ -341,7 +376,7 @@ name: interviewer
 description: Conducts QA discovery interviews following the persona scripts in interview/. Stateful, resumable, bias-aware.
 tools:
   - filesystem  # read interview/, read+write responses/
-  - terminal    # run python helpers, run git commands
+  - terminal    # run node helpers, run git commands
 skills:
   - interview-script-loader
   - interview-session-store
@@ -355,9 +390,9 @@ skills:
 
 The system-prompt body of the agent profile encodes:
 
-- **Boot sequence** — greet, ask new vs. resume, capture access_mode (direct vs. facilitated), ask "what should I call you?" (optional, just for friendlier transcripts), parse script, create or load session.
+- **Boot sequence** — greet, ask new vs. resume, capture access_mode (direct vs. facilitated), capture optional name, parse script, create or load session.
 - **Per-question loop** — read next question; ask it; receive answer; invoke refinement/confidence-tagging/skip-handling as triggered; refuse advice requests per bias-mitigation; persist; advance.
-- **Navigation** — recognize "go back to question N" and invoke `revise_cursor` + `mark_revised`.
+- **Navigation** — recognize "go back to question N" and invoke `revise_cursor` + write a new entry with `revised_from` populated.
 - **Wrap-up** — show counts summary; ask for any open feedback (→ `flags.md`); invoke `interview-finalize`; surface branch URL.
 
 ## 7. End-to-end flow
@@ -369,7 +404,7 @@ The system-prompt body of the agent profile encodes:
        ↓
 script-loader → reads interview/02-qa-lead-interview.md, returns 27 questions
        ↓
-session-store.new_session() → writes responses/{session_id}/{session,metadata,answers}.yaml + resume-token.txt
+session-store.new_session() → writes responses/{session_id}/{session,metadata,answers}.json + resume-token.txt
        ↓
 [per-question loop]
   agent asks Q
@@ -412,7 +447,7 @@ session-store.load_session(resume_token)
 | Failure | Detection | Agent response |
 |---|---|---|
 | Helper script crashes / non-zero exit | Skill instruction wrapper catches stderr | Surface error; pause session; offer retry. State unchanged (writes are atomic and pre-helper). |
-| YAML parse error | `load_session` validation | "I can't parse `session.yaml` for this interview. Share for repair, or start a new session." |
+| JSON parse error | `load_session` validation | "I can't parse `session.json` for this interview. Share for repair, or start a new session." |
 | Git push rejected | finalize helper exit code | Offer retry, bundle fallback, or manual instructions. Session stays `complete` locally. |
 | Working tree dirty (unrelated) at finalize | `git status --porcelain` | Warn, list dirty files, ask: stash, separate commit, or abort. Never silently includes unrelated files. |
 | Resume token not found | `load_session` lookup | "I couldn't find a session with that token here. Did you clone the right branch?" |
@@ -432,32 +467,32 @@ session-store.load_session(resume_token)
 
 | Layer | Tooling | Coverage |
 |---|---|---|
-| **Python helpers** | `pytest` with `tmp_path` for filesystem mocking | Each helper is small, pure I/O. Unit-test happy path + each documented failure mode. |
-| **Helper output schemas** | `jsonschema` | Every helper that emits JSON has a schema; CI validates against fixtures. |
-| **YAML file shapes** | `jsonschema` (against YAML loaded as dicts) | Validate `session.yaml` / `answers.yaml` / `metadata.yaml` against schemas. |
-| **End-to-end integration** | `tests/integration/scripted_interview.py` test harness simulating an interviewee feeding canned responses | Happy path, skip, refinement, back-nav, finalize-with-bundle, finalize-with-git (against a local bare repo). |
+| **Helpers** | `node --test tests/unit/` (built-in test runner since Node 18) | Each helper is small, pure I/O. Unit-test happy path + each documented failure mode. |
+| **Helper output schemas** | Hand-rolled stdlib validators in tests (small subset of JSON Schema is sufficient — `required`, `type`, `enum`, `pattern`) | Every helper that emits JSON has a schema; tests validate stdout against the schema. |
+| **State file shapes** | Same hand-rolled validator | Validate `session.json` / `answers.json` / `metadata.json` against schemas. |
+| **End-to-end integration** | `tests/integration/scripted_interview.mjs` test harness simulating an interviewee feeding canned responses | Happy path, skip, refinement, back-nav, finalize-with-bundle, finalize-with-git (against a local bare repo). |
 | **Skills (markdown)** | Manual playtest + golden transcript tests | Validate by running a real interview and comparing `transcript.md` to a hand-checked golden. |
 
-CI runs unit tests + schema validation on every push. Integration tests run nightly.
+CI runs `node --test` on every push.
 
-Dev dependencies: `pytest`, `pyyaml`, `jsonschema`. Runtime dependency: `pyyaml` only.
+**Zero npm dependencies — runtime or dev.** All testing uses Node built-ins.
 
 ## 10. Bootstrapping (what gets created when this is implemented)
 
-1. **Directories:** `.github/skills/{seven-skill-dirs}/`, `.github/agents/`, `helpers/{session,script,confidence,skip,finalize}/`, `responses/.gitkeep`, `schemas/`, `tests/{unit,integration,fixtures}/`.
+1. **Directories:** `.github/skills/{seven-skill-dirs}/`, `.github/agents/`, `helpers/{common,session,script,confidence,skip,finalize}/`, `responses/.gitkeep`, `schemas/`, `tests/{unit,integration,fixtures}/`.
 2. **7 SKILL.md files** + 1 `interviewer.agent.md`.
-3. **13 Python helpers** (6 session, 2 script, 1 confidence, 1 skip, 3 finalize). Each ~50–150 lines with tests.
+3. **14 Node helpers** (3 common: ids, json_io, frontmatter; 6 session; 2 script; 1 confidence; 1 skip; 4 finalize: generate_transcript, finalize_session, git_branch_commit_push, package_bundle). Each ~50–150 lines with tests.
 4. **JSON schemas:** `session.schema.json`, `answers.schema.json`, `metadata.schema.json`, plus per-helper output schemas.
 5. **Frontmatter added** to existing `interview/01-..05-*.md` files.
 6. **`.github/skills/README.md`** — short orientation: skill list, how to invoke via `copilot --agent interviewer`, where to look for issues.
-7. **`requirements.txt`** with `pyyaml` (only runtime dep).
+7. **`package.json`** with `"type": "module"`, no dependencies. Required so `.mjs` ESM resolution works inside the package and `node --test` discovers tests.
 8. **First playtest:** a developer runs the QA Engineer script as the interviewee, end-to-end, validates `transcript.md`.
 
 ## 11. Verification
 
 End-to-end checks before declaring v1 complete:
 
-- **Smoke test on each persona script.** Run a scripted-interviewee integration test through each of the five `interview/` scripts. Verify `answers.yaml` is well-formed, all required-context questions are recorded, all `human_only` IDs are skipped with `skip_reason: human_only`, all `[3d]` numeric answers have a `response_confidence` value or a `flags.md` row.
+- **Smoke test on each persona script.** Run a scripted-interviewee integration test through each of the five `interview/` scripts. Verify `answers.json` is well-formed, all required-context questions are recorded, all `human_only` IDs are skipped with `skip_reason: human_only`, all `[3d]` numeric answers have a `response_confidence` value or a `flags.md` row.
 - **Resume test.** Start a session, kill the agent mid-question, resume from the token, complete the session. Assert `cursor.current_question_id` resumes correctly and any `pending` follow-ups are re-prompted.
 - **Read-only refusal test.** Commit a session, then try to write to it. Assert `check_writability` refuses and the agent surfaces the correct message.
 - **Back-nav test.** Navigate back to an earlier question, revise, finalize. Assert `revised_from` populated and `status: revised`.
@@ -473,3 +508,4 @@ These are intentionally deferred — they don't block this design but will need 
 2. **Conversational refinement trigger threshold.** "Short/vague" is currently informal. Implementation may want an explicit length-or-content heuristic (e.g., < N tokens, no concrete noun, etc.).
 3. **Stale-session window.** Currently 14 days. Tunable.
 4. **Test interviewee fixtures.** What canned responses should the integration tests use? Probably one set per persona script, hand-authored as fixtures.
+5. **`package_bundle.mjs` zip implementation.** Writing a stdlib-only ZIP writer is ~150 lines and well-trodden. Alternative: `child_process.spawn("tar", ...)` or `7z`. Decide during implementation based on whether either tool is reliably present on the corporate image.
