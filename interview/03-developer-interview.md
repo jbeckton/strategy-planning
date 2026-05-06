@@ -51,12 +51,10 @@
 
 17. In an ideal world, what does the dev → QA → release loop look like for you? `[4a]`
 18. If the QA loop got faster and more reliable, what would *change in your delivery output* — fewer rework cycles, more features per sprint, less context-switching? Try to quantify. `[5]`
-19. _(After #17–18)_ Where do you see AI fitting in, if anywhere? `[4b]`
-20. What part of QA's work do you think AI should **not** be doing? `[6-R]`
 
 ---
 
 ## 7. Wrap-up (2 min)
 
-21. What did I not ask about that I should have?
-22. From your team's perspective, what would make the strongest case to leadership for changing this? `[1] [8]`
+19. What did I not ask about that I should have?
+20. From your team's perspective, what would make the strongest case to leadership for changing this? `[1] [8]`

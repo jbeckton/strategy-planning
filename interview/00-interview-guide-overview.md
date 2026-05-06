@@ -20,10 +20,10 @@ Aim for breadth on QA Engineer interviews — different test surface areas (UI, 
 
 ## Recommended Interview Sequence
 
-1. **QA Lead first** — establishes scope, team structure, what metrics already exist, and which ICs to prioritize. **Treat this session as scoping, not interpretation.** Capture facts, structure, candidate interviewees, security/governance constraints. Defer "what's the real bottleneck" and "where does AI fit" to the follow-up after IC interviews — otherwise the rest of discovery anchors on management narrative.
+1. **QA Lead first** — establishes scope, team structure, what metrics already exist, and which ICs to prioritize. **Treat this session as scoping, not interpretation.** Capture facts, structure, candidate interviewees, security/governance constraints. Defer "what's the real bottleneck" to the follow-up after IC interviews — otherwise the rest of discovery anchors on management narrative.
 2. **QA Engineers next** — deepest current-state detail. Run these before forming hypotheses.
 3. **Developers, Release Manager, Product Owner** — can run in parallel after QA interviews; their input is calibration, not foundation.
-4. **QA Lead follow-up** (recommended, 30 min) — review aggregated findings, validate baseline numbers, pressure-test target state and AI fit. This is where interpretation happens.
+4. **QA Lead follow-up** (recommended, 30 min) — review aggregated findings, validate baseline numbers, pressure-test target state and bottleneck interpretation. This is where interpretation happens.
 
 ---
 
@@ -37,8 +37,8 @@ Aim for breadth on QA Engineer interviews — different test surface areas (UI, 
 - Distinguish *typical* from *worst case*; both matter for the brief.
 
 **Avoid:**
-- Leading with AI. Current-state discovery must be unbiased. AI questions come at the end.
 - Solutioning during the interview. Note ideas; don't validate them.
+- Probing for the participant's view on AI fit, AI capabilities, or where AI should/shouldn't be applied. Participants have varying levels of AI knowledge; their answers are noise rather than signal. AI tool and technology recommendations are author/architect output for the brief's §4b, sourced from external capability assessment — not from interview synthesis.
 - Yes/no questions during discovery. Use open-ended prompts.
 - Anchoring with your own assumptions ("So I imagine verification is the big problem, right?").
 
@@ -62,15 +62,16 @@ Each question in the scripts is tagged with the brief section it feeds:
 - `[3b]` Personas
 - `[3c]` Pain Points
 - `[3d]` Baseline Metrics
-- `[4a]` Target State
-- `[4b]` AI Integration Points
+- `[4a]` Target State (operating model, not implementation)
 - `[5]` Expected Value (quantitative or qualitative)
 - `[6-A]` Assumptions
-- `[6-R]` Risks (including proposed-change failure modes, not just current-state pain)
+- `[6-R]` Risks (including proposed-change failure modes, not just current-state pain — phrased in neutral "new tooling" / "automated verification" language, never naming AI)
 - `[6-D]` Dependencies
 - `[6-S]` Security & Data Governance constraints
 - `[7]` Proposed Approach / phasing
 - `[8]` The Ask (sponsor / decision-maker context)
+
+> **Brief §4b AI Integration Points** is filled by the author/architect from external AI tooling assessment, not from interview synthesis — there is no `[4b]` interview tag.
 
 Untagged questions are warm-ups or context-builders.
 

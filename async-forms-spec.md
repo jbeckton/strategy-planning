@@ -41,7 +41,7 @@ forms/product-owner.md
 
 ## 4. Form template shape
 
-Each generated form has YAML frontmatter (with placeholders the participant replaces) and a body of grouped questions with response blocks:
+Each generated form has YAML frontmatter (with placeholders the participant replaces) and a body of grouped questions with response blocks. **Questions tagged `[3d]` get an additional structured "Source" block** so the brief's §3d Confidence column (Tracked / Estimated / TBD) can be populated reliably from filled forms — without the structured prompt, participants tend to give numbers without saying whether they're tracked or estimated, which is the exact distinction §3d requires.
 
 ```markdown
 ---
@@ -60,6 +60,10 @@ completed_at: <fill in YYYY-MM-DD when done>
 - To skip, leave the response blank or write `(skip)`.
 - Concrete examples ("the last test I wrote", "Tuesday's release", "about 4 hours")
   are far more useful than generalities.
+- For questions with a **Source of any number you give** prompt, please label your
+  number as `Tracked` (cite dashboard/ticket/report), `Estimated` (your recall),
+  or `Not measured`. Rough estimates are welcome — we just need to know it's an
+  estimate so the brief reports it accurately.
 - When done: fill the frontmatter at the top, save, and send back.
 
 ---
@@ -83,6 +87,10 @@ completed_at: <fill in YYYY-MM-DD when done>
 **Your response:**
 
 > _(write your answer here)_
+
+**Source of any number you give:** `Tracked` (cite dashboard/ticket/report) / `Estimated` (your recall) / `Not measured`
+
+> _(your source here)_
 
 ## Test Authoring
 
@@ -152,6 +160,7 @@ After implementing the SKILL.md, the sponsor:
    - Tags appear inline at the end of each question.
    - Section headings preserved (without the `(N min)` suffixes from source).
    - Frontmatter has the three placeholders (`participant_name`, `participant_role`, `completed_at`).
+   - **Every `[3d]`-tagged question has a "Source of any number you give" block under its response; questions without `[3d]` do not.**
 3. Repeats for the other four scripts.
 4. Sends the forms out and waits.
 5. When a return comes back, drops it into `forms/<script_id>-<slug>.md` and feeds it (with the others) to the compiler agent.

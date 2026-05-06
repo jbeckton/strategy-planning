@@ -1,10 +1,10 @@
 # Interview Script — QA Lead / Manager
 
 **Persona:** QA team lead, manager, or director with cross-team visibility
-**Duration:** 60 minutes (script runs ~63; sections 6.aspirational and 7.failure-modes flow to the follow-up if time runs short)
-**Brief sections informed:** 3a, 3b, 3c, 3d, 4a, 4b, 5, 6-A, 6-R, 6-D, 6-S, 7, 8
+**Duration:** 60 minutes (script runs ~58; section 7 failure-mode questions flow to the follow-up if time runs short)
+**Brief sections informed:** 3a, 3b, 3c, 3d, 4a, 5, 6-A, 6-R, 6-D, 6-S, 7, 8
 
-> **Interviewer note:** Treat the first Lead session as **scoping**, not interpretation. Capture facts, structure, metrics inventory, security/governance constraints, and candidate ICs. Defer "where's the real bottleneck" and "where does AI fit" to the optional follow-up after IC interviews — running interpretation here anchors the rest of discovery on management narrative.
+> **Interviewer note:** Treat the first Lead session as **scoping**, not interpretation. Capture facts, structure, metrics inventory, security/governance constraints, and candidate ICs. Defer "where's the real bottleneck" to the optional follow-up after IC interviews — running interpretation here anchors the rest of discovery on management narrative.
 
 ---
 
@@ -76,28 +76,28 @@
 22. If you had unconstrained budget and authority for two quarters, what would you change about how this team operates? `[4a]`
 23. What would "good" look like from a leadership-visible metric perspective? `[5]`
 24. _(After #22–23, before any solution framing)_ What constraints would any change to this team have to respect — security, compliance, vendor approvals, change windows, team appetite, headcount caps? `[6-A] [6-S] [6-D]`
-25. _(After #24)_ Where do you see AI fitting in — and where do you think it's a bad fit? `[4b] [6-R]`
-26. What capabilities do you assume will need to be true for AI integration to work — accuracy, latency, explainability, integration with existing tools? `[6-A]`
 
 ---
 
 ## 7. Risks, Dependencies, Governance (8 min)
 
-27. What are the political or organizational risks of this kind of change for the QA team? `[6-R]`
-28. What would you need from leadership, other teams, or vendors for this to succeed? `[6-D]`
-29. Who, outside the QA team, has veto power or will need to be convinced? `[6-D] [8]`
-30. What's the team's appetite for change right now — burned out, energized, somewhere in between? `[6-R]`
+25. What are the political or organizational risks of this kind of change for the QA team? `[6-R]`
+26. What would you need from leadership, other teams, or vendors for this to succeed? `[6-D]`
+27. Who, outside the QA team, has veto power or will need to be convinced? `[6-D] [8]`
+28. What's the team's appetite for change right now — burned out, energized, somewhere in between? `[6-R]`
 
 ### Security & data governance (mandatory — these constraints often dictate what's even possible)
 
-31. What's the data classification of your test artifacts — test scripts, fixtures, recorded sessions, defect attachments? Anything regulated, PII, or customer-derived? `[6-S]`
-32. If a tool needed to read your test code or test data to do its job, who would have to approve that — InfoSec, Legal, Privacy, Platform/Infra? Is there an existing approved-tooling list it would have to fit within? `[6-S] [8]`
-33. Have prior tooling initiatives been blocked or scoped down by governance review? What was the constraint? `[6-S] [6-R]`
+29. What's the data classification of your test artifacts — test scripts, fixtures, recorded sessions, defect attachments? Anything regulated, PII, or customer-derived? `[6-S]`
+30. If a tool needed to read your test code or test data to do its job, who would have to approve that — InfoSec, Legal, Privacy, Platform/Infra? Is there an existing approved-tooling list it would have to fit within? `[6-S] [8]`
+31. Have prior tooling initiatives been blocked or scoped down by governance review? What was the constraint? `[6-S] [6-R]`
+32. Looking at the InfoSec/Legal/Privacy review process for an initiative like this: how long does approval typically take, how many revision cycles, and could that timeline erode the operational benefit we'd be trying to capture? `[6-R] [6-S]`
 
 ### Failure-mode questions (probe the proposed change, not just current pain)
 
-34. If we adopted an AI-assisted approach and it produced confident but wrong results — hallucinated tests, false-pass verifications — how would you expect that to surface, and how long before you caught it? `[6-R]`
-35. What does "this initiative failed and we pulled it back" look like — what would you need to see to call it? `[6-R] [7]`
+33. If a new automated verification tool produced confident but wrong results — tests that looked fine but were checking the wrong thing, or false-pass signals — how would you expect that to surface, and how long before you caught it? `[6-R]`
+34. What does "this initiative failed and we pulled it back" look like — what would you need to see to call it? `[6-R] [7]`
+35. Over the next two quarters, what other QA investments would compete with this one for the same capacity or budget — and what makes those alternatives more or less attractive than this proposal? `[6-R] [7]`
 
 ---
 
@@ -113,6 +113,6 @@
 - Review aggregated IC findings
 - **Reconcile metric divergence** between Lead and IC reports (don't average — investigate the gap)
 - Validate or correct baseline metrics; promote estimated metrics to tracked only if real instrumentation exists
-- Pressure-test draft target state and AI integration points (this is where interpretation belongs — not the first session)
+- Pressure-test draft target state and bottleneck interpretation (this is where interpretation belongs — not the first session)
 - Catch any aspirational metrics or failure-mode questions deferred from §3.b / §7 above
 - Confirm the explicit ask for §8 of the brief

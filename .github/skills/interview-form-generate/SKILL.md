@@ -69,6 +69,7 @@ completed_at: <fill in YYYY-MM-DD when done>
 - Answer each question in the **Your response:** block under it.
 - To skip a question, leave the response blank or write `(skip)`.
 - Concrete examples ("the last test I wrote", "Tuesday's release", "about 4 hours") are far more useful than generalities.
+- For questions with a **Source of any number you give** prompt — that's any question about counts, durations, percentages, or rates — please label your number as `Tracked` (cite the dashboard, ticket, or report it came from), `Estimated` (your recall or gut), or `Not measured`. Rough estimates are welcome; we just need to know it's an estimate so the brief reports it accurately.
 - When you're done: fill in the frontmatter at the top, save the file, and send it back.
 
 ---
@@ -89,11 +90,15 @@ completed_at: <fill in YYYY-MM-DD when done>
 
 ## <section heading 2>
 
-### Q5. <question text> `[tag]`
+### Q5. <question text> `[3d]`
 
 **Your response:**
 
 > _(write your answer here)_
+
+**Source of any number you give:** `Tracked` (cite dashboard/ticket/report) / `Estimated` (your recall) / `Not measured`
+
+> _(your source here)_
 ````
 
 Notes on the template:
@@ -101,6 +106,7 @@ Notes on the template:
 - The `### Q<n>.` heading uses the source question's original number.
 - Tags appear after the question text, formatted exactly as in the source (each `[...]` in its own backticked group, separated by spaces).
 - The "Your response:" block is exactly two lines: `**Your response:**`, blank line, `> _(write your answer here)_`.
+- **For any question whose tags include `[3d]`, append a "Source of any number you give" block after the response.** This is what populates the brief's §3d Confidence column. The block is exactly four lines: a blank line, `**Source of any number you give:** \`Tracked\` (cite dashboard/ticket/report) / \`Estimated\` (your recall) / \`Not measured\``, blank line, `> _(your source here)_`. Apply this rule based on the presence of `[3d]` in the source tag list — multi-tagged questions like `[3d] [3c]` still get the block; questions without `[3d]` do not.
 
 ### 5. Verify
 
@@ -111,6 +117,7 @@ Before reporting done, scan the generated form against the source:
 - No interviewer-guidance quote blocks appear in the form.
 - Section headings appear without the `(N min)` time markers.
 - The persona-level metadata block from the source top is not in the form.
+- **Every `[3d]`-tagged question has a "Source of any number you give" block under its response** — and questions without `[3d]` do not.
 
 If anything is off, regenerate.
 
@@ -140,7 +147,7 @@ Source `interview/01-qa-engineer-interview.md` (excerpt):
 
 **Persona:** QA Engineer authoring/executing tests day-to-day
 **Duration:** 45–60 minutes
-**Brief sections informed:** 3a, 3b, 3c, 3d, 4a, 4b (final block only), 6-R
+**Brief sections informed:** 3a, 3b, 3c, 3d, 4a, 6-R
 
 ---
 
@@ -176,6 +183,7 @@ completed_at: <fill in YYYY-MM-DD when done>
 - Answer each question in the **Your response:** block under it.
 - To skip a question, leave the response blank or write `(skip)`.
 - Concrete examples ("the last test I wrote", "Tuesday's release", "about 4 hours") are far more useful than generalities.
+- For questions with a **Source of any number you give** prompt — that's any question about counts, durations, percentages, or rates — please label your number as `Tracked` (cite the dashboard, ticket, or report it came from), `Estimated` (your recall or gut), or `Not measured`. Rough estimates are welcome; we just need to know it's an estimate so the brief reports it accurately.
 - When you're done: fill in the frontmatter at the top, save the file, and send it back.
 
 ---
@@ -199,6 +207,10 @@ completed_at: <fill in YYYY-MM-DD when done>
 **Your response:**
 
 > _(write your answer here)_
+
+**Source of any number you give:** `Tracked` (cite dashboard/ticket/report) / `Estimated` (your recall) / `Not measured`
+
+> _(your source here)_
 
 ## Test Authoring
 

@@ -43,12 +43,11 @@
 
 14. If QA were no longer a delivery constraint, what would change about how you plan and ship? `[4a] [5]`
 15. What outcome — measurable, business-visible — would convince you this initiative was worth the investment? `[5]`
-16. _(Second-to-last)_ Would any new approach to QA decision support raise concerns from a product or customer-impact angle — and if so, what specifically would you want to see before trusting it? (Don't presuppose AI; if AI comes up in their answer, follow up on the specific concerns.) `[4b] [6-R]`
-17. _(Last)_ If a new tool produced confident-but-wrong quality signals — false-pass or false-fail — how would that surface to your team, and what's the cost to you? `[6-R]`
+16. If a new tool produced confident-but-wrong quality signals — false-pass or false-fail — how would that surface to your team, and what's the cost to you? `[6-R]`
 
 ---
 
 ## 6. Wrap-up (1 min)
 
-18. What did I not ask about that I should have?
-19. From a product perspective, what would make the strongest argument to leadership for funding this? `[1] [8]`
+17. What did I not ask about that I should have?
+18. From a product perspective, what would make the strongest argument to leadership for funding this? `[1] [8]`

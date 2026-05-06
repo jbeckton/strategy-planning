@@ -28,23 +28,23 @@
 8. How much confidence do you have in QA's pass/fail signal at the gate? `[3c]`
 9. What signals do you look at beyond pass/fail — escape rate trends, flake rate, coverage? `[3a] [3d]`
 10. _(Optional if time tight)_ When a release goes wrong post-deploy, how often was there an upstream signal that should have caught it? `[3c]`
-11. What's the typical hotfix rate per release, and what's the most common root cause? Tracked or estimated? `[3d] [3c]`
+11. What's the typical hotfix rate per release, and what's the most common root cause? `[3d] [3c]`
+12. Of customer-facing issues that surface in the first week or two post-deploy, what fraction would you consider QA-catchable defects — bugs in tested-and-verified surface area — vs. infrastructure issues, third-party regressions, or out-of-scope problems? `[3d] [3c]`
 
 ---
 
 ## 4. Cadence and Pressure (5 min)
 
-12. Where does release pressure most often conflict with QA thoroughness? `[3c]`
-13. _(Optional)_ Have you ever shipped knowing QA wasn't fully complete? What forced that decision? `[3c]`
-14. If the QA gate were 50% faster with the same defect catch rate, what would you do with the recovered time? `[5]`
+13. Where does release pressure most often conflict with QA thoroughness? `[3c]`
+14. _(Optional)_ Have you ever shipped knowing QA wasn't fully complete? What forced that decision? `[3c]`
+15. If the QA gate were 50% faster with the same defect catch rate, what would you do with the recovered time? `[5]`
 
 ---
 
 ## 5. Aspirational Future State (3 min)
 
-15. What does a healthy release cadence look like from your seat? `[4a]`
-16. Where would faster, more reliable QA signal change your job most? `[5]`
-17. What role, if any, should new tooling or automation play in the gate decision — and what would you need to trust it? (Don't presuppose AI; if AI comes up, follow up on what specifically would and wouldn't be acceptable.) `[4b] [6-R]`
+16. What does a healthy release cadence look like from your seat? `[4a]`
+17. Where would faster, more reliable QA signal change your job most? `[5]`
 
 ---
 

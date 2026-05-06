@@ -2,7 +2,7 @@
 
 **Persona:** QA Engineer authoring/executing tests day-to-day
 **Duration:** 45–60 minutes
-**Brief sections informed:** 3a, 3b, 3c, 3d, 4a, 4b (final block only), 6-R
+**Brief sections informed:** 3a, 3b, 3c, 3d, 4a, 6-R
 
 ---
 
@@ -55,22 +55,22 @@
 23. When you find a real defect during verification, what's the next step, and how long does that take? `[3a]`
 24. What's the most tedious part of verification? The most error-prone? `[3c]`
 25. If you had to delegate verification to someone unfamiliar, what's the part you'd be most worried about them getting wrong? `[3c] [6-R]`
+26. In the past quarter, roughly how many production defects came from features your team had already tested and signed off on? Of those, were the relevant tests passing — meaning the suite ran green and missed it — or were the defects in areas your tests didn't cover? `[3d] [3c]`
+27. If a significant portion of your test suite were generated or maintained by automated tooling, what would maintaining it look like as the codebase evolves — easier, harder, or about the same as today, and why? `[6-R]`
 
 ---
 
 ## 6. Pain Point Prioritization (5 min)
 
-26. If you could remove one task from your week permanently, what would it be and why? `[3c]`
-27. What part of your job do you find genuinely engaging — what would you want to keep doing? `[5]` `[4a]`
-28. Where do you feel like a bottleneck for the team? Where does the team feel like a bottleneck for you? `[3c]`
+28. If you could remove one task from your week permanently, what would it be and why? `[3c]`
+29. What part of your job do you find genuinely engaging — what would you want to keep doing? `[5]` `[4a]`
+30. Where do you feel like a bottleneck for the team? Where does the team feel like a bottleneck for you? `[3c]`
 
 ---
 
-## 7. Future State — keep open-ended, no leading on AI (5 min)
+## 7. Future State — keep open-ended (5 min)
 
-29. Imagine your job two years from now in an ideal world. What's different? `[4a]`
-30. _(Only after #29)_ Have you used any AI-assisted tooling — code completion, chat assistants, IDE-integrated AI — for QA work? What worked, what didn't? `[4b] [6-R]`
-31. What part of your job do you think AI **should not** be doing, and why? `[6-R]`
+31. Imagine your job two years from now in an ideal world. What's different? `[4a]`
 
 ---
 
@@ -89,4 +89,4 @@
 - "How long did that step take, roughly?"
 - "How often does that happen — daily, weekly, occasionally?"
 - "What would have to be true for that to go faster?"
-- **Tracked vs. estimated:** "Is that number something you've seen reported on a dashboard or ticket, or is it your own estimate?" (Apply after every numeric answer — Q3, Q7, Q8, Q12, Q16, Q18–22. The brief's §3d Confidence column depends on this distinction.)
+- **Tracked vs. estimated** (live interviews only): "Is that number something you've seen reported on a dashboard or ticket, or is it your own estimate?" Apply after every numeric answer (every `[3d]`-tagged question). The brief's §3d Confidence column depends on this distinction. Async written forms get a structured Source prompt under each `[3d]` question automatically — this probe is only for live follow-up sessions.
