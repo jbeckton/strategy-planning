@@ -68,6 +68,8 @@ completed_at: <fill in YYYY-MM-DD when done>
 
 - Answer each question in the **Your response:** block under it.
 - To skip a question, leave the response blank or write `(skip)`.
+- Please do not modify the format of this document or the questions.
+- You may use markdown in your response as long as it does not include the same markdown used to delineate sections of this form, such as headings (`###`).
 - Concrete examples ("the last test I wrote", "Tuesday's release", "about 4 hours") are far more useful than generalities.
 - For questions with a **Source of any number you give** prompt — that's any question about counts, durations, percentages, or rates — please label your number as `Tracked` (cite the dashboard, ticket, or report it came from), `Estimated` (your recall or gut), or `Not measured`. Rough estimates are welcome; we just need to know it's an estimate so the brief reports it accurately.
 - When you're done: fill in the frontmatter at the top, save the file, and send it back.
@@ -80,13 +82,13 @@ completed_at: <fill in YYYY-MM-DD when done>
 
 **Your response:**
 
-> _(write your answer here)_
+_(write your answer here)_
 
 ### Q2. <question text>
 
 **Your response:**
 
-> _(write your answer here)_
+_(write your answer here)_
 
 ## <section heading 2>
 
@@ -94,19 +96,19 @@ completed_at: <fill in YYYY-MM-DD when done>
 
 **Your response:**
 
-> _(write your answer here)_
+_(write your answer here)_
 
 **Source of any number you give:** `Tracked` (cite dashboard/ticket/report) / `Estimated` (your recall) / `Not measured`
 
-> _(your source here)_
+_(your source here)_
 ````
 
 Notes on the template:
 
 - The `### Q<n>.` heading uses the source question's original number.
 - Tags appear after the question text, formatted exactly as in the source (each `[...]` in its own backticked group, separated by spaces).
-- The "Your response:" block is exactly two lines: `**Your response:**`, blank line, `> _(write your answer here)_`.
-- **For any question whose tags include `[3d]`, append a "Source of any number you give" block after the response.** This is what populates the brief's §3d Confidence column. The block is exactly four lines: a blank line, `**Source of any number you give:** \`Tracked\` (cite dashboard/ticket/report) / \`Estimated\` (your recall) / \`Not measured\``, blank line, `> _(your source here)_`. Apply this rule based on the presence of `[3d]` in the source tag list — multi-tagged questions like `[3d] [3c]` still get the block; questions without `[3d]` do not.
+- The "Your response:" block is exactly two lines: `**Your response:**`, blank line, `_(write your answer here)_`. No `>` prefix — participants replace the placeholder line with their answer directly.
+- **For any question whose tags include `[3d]`, append a "Source of any number you give" block after the response.** This is what populates the brief's §3d Confidence column. The block is exactly four lines: a blank line, `**Source of any number you give:** \`Tracked\` (cite dashboard/ticket/report) / \`Estimated\` (your recall) / \`Not measured\``, blank line, `_(your source here)_`. Apply this rule based on the presence of `[3d]` in the source tag list — multi-tagged questions like `[3d] [3c]` still get the block; questions without `[3d]` do not.
 
 ### 5. Verify
 
@@ -182,6 +184,8 @@ completed_at: <fill in YYYY-MM-DD when done>
 
 - Answer each question in the **Your response:** block under it.
 - To skip a question, leave the response blank or write `(skip)`.
+- Please do not modify the format of this document or the questions.
+- You may use markdown in your response as long as it does not include the same markdown used to delineate sections of this form, such as headings (`###`).
 - Concrete examples ("the last test I wrote", "Tuesday's release", "about 4 hours") are far more useful than generalities.
 - For questions with a **Source of any number you give** prompt — that's any question about counts, durations, percentages, or rates — please label your number as `Tracked` (cite the dashboard, ticket, or report it came from), `Estimated` (your recall or gut), or `Not measured`. Rough estimates are welcome; we just need to know it's an estimate so the brief reports it accurately.
 - When you're done: fill in the frontmatter at the top, save the file, and send it back.
@@ -194,23 +198,23 @@ completed_at: <fill in YYYY-MM-DD when done>
 
 **Your response:**
 
-> _(write your answer here)_
+_(write your answer here)_
 
 ### Q2. What kind of testing do you primarily own — UI, API, integration, performance, exploratory? `[3b]`
 
 **Your response:**
 
-> _(write your answer here)_
+_(write your answer here)_
 
 ### Q3. On a typical day this past week, roughly what % of your time went to authoring vs. execution vs. verification vs. everything else? `[3d]`
 
 **Your response:**
 
-> _(write your answer here)_
+_(write your answer here)_
 
 **Source of any number you give:** `Tracked` (cite dashboard/ticket/report) / `Estimated` (your recall) / `Not measured`
 
-> _(your source here)_
+_(your source here)_
 
 ## Test Authoring
 
@@ -218,11 +222,11 @@ completed_at: <fill in YYYY-MM-DD when done>
 
 **Your response:**
 
-> _(write your answer here)_
+_(write your answer here)_
 
 ### Q5. Where did the requirements or acceptance criteria come from? How clear were they? `[3c]`
 
 **Your response:**
 
-> _(write your answer here)_
+_(write your answer here)_
 ```

@@ -58,6 +58,8 @@ completed_at: <fill in YYYY-MM-DD when done>
 
 - Answer each question in the **Your response:** block under it.
 - To skip, leave the response blank or write `(skip)`.
+- Please do not modify the format of this document or the questions.
+- You may use markdown in your response as long as it does not include the same markdown used to delineate sections of this form, such as headings (`###`).
 - Concrete examples ("the last test I wrote", "Tuesday's release", "about 4 hours")
   are far more useful than generalities.
 - For questions with a **Source of any number you give** prompt, please label your
@@ -74,23 +76,23 @@ completed_at: <fill in YYYY-MM-DD when done>
 
 **Your response:**
 
-> _(write your answer here)_
+_(write your answer here)_
 
 ### Q2. What kind of testing do you primarily own — UI, API, integration, performance, exploratory? `[3b]`
 
 **Your response:**
 
-> _(write your answer here)_
+_(write your answer here)_
 
 ### Q3. On a typical day this past week, roughly what % of your time went to authoring vs. execution vs. verification vs. everything else? `[3d]`
 
 **Your response:**
 
-> _(write your answer here)_
+_(write your answer here)_
 
 **Source of any number you give:** `Tracked` (cite dashboard/ticket/report) / `Estimated` (your recall) / `Not measured`
 
-> _(your source here)_
+_(your source here)_
 
 ## Test Authoring
 
@@ -98,7 +100,7 @@ completed_at: <fill in YYYY-MM-DD when done>
 
 **Your response:**
 
-> _(write your answer here)_
+_(write your answer here)_
 
 ...
 ```
