@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "WebSearch"
+      "WebSearch",
+      "Read(//c/Users/User/**)",
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\User\\\\Projects\\\\alight-qa-automation-planning\\\\forms\" -File)",
+      "Bash(Select-Object Name)",
+      "Bash(grep -i \"\\\\.md$\")"
     ]
   }
 }

@@ -130,7 +130,7 @@ When the participant returns the filled form, save it as `forms/<script_id>-<par
 - `Jane Smith` → `forms/qa-engineer-jane-smith.md`
 - `Pat O'Brien` → `forms/qa-engineer-pat-obrien.md`
 
-The compiler agent reads `forms/*.md` (excluding the bare-template files like `forms/qa-engineer.md`) to draft the strategy brief.
+The compiler agent reads all files in `responses/` to draft the strategy brief.
 
 ## What this skill does NOT do
 
